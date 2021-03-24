@@ -52,17 +52,17 @@ papers['Text_processed'] = \
 papers['Text_processed'].map(lambda x : x.lower())
 
 
-@Language.factory('french_lemmatizer')
-def create_french_lemmatizer(nlp, name):
-    return LefffLemmatizer(after_melt=True, default=True)
+#@Language.factory('french_lemmatizer')
+#def create_french_lemmatizer(nlp, name):
+#    return LefffLemmatizer(after_melt=True, default=True)
 
-@Language.factory('melt_tagger')
-def create_melt_tagger(nlp, name):
-    return POSTagger()
+#@Language.factory('melt_tagger')
+#def create_melt_tagger(nlp, name):
+#    return POSTagger()
 
-nlp = spacy.load('fr_core_news_sm')
-nlp.add_pipe('melt_tagger', after='parser')
-nlp.add_pipe('french_lemmatizer', after='melt_tagger')
+#nlp = spacy.load('fr_core_news_sm')
+#nlp.add_pipe('melt_tagger', after='parser')
+#nlp.add_pipe('french_lemmatizer', after='melt_tagger')
 
 def custom_tokenizer(nlp):
     infix_re = re.compile(r'''[.\,\?\:\;\...\‘\’\`\“\”\"\'~]''')
@@ -74,8 +74,8 @@ def custom_tokenizer(nlp):
                                 infix_finditer=infix_re.finditer,
                                 token_match=None)
 
-nlp = spacy.load("fr_core_news_sm")
-#nlp = spacy.load('fr_core_news_md')
+# nlp = spacy.load("fr_core_news_sm")
+nlp = spacy.load('fr_core_news_md')
 #nlp = fr_core_news_md.load()
 nlp.tokenizer = custom_tokenizer(nlp)
 nlp.tokenizer.token_match = French.Defaults.token_match
@@ -108,7 +108,8 @@ morestopwords = ['dela', 'd\'', '-','\n\n', '\n','il','-t','-il', 'lundi', 'mard
                  'est-il', 'est', 'qu', 'n\'est', 'c\'est', 's\'est', 'l\'est', 'qu\'on', 'lorsqu', 'lorsqu\'on', 'presque', \
                  'jusque-là', 'qu\'un', 'qu\'une', 'lorsqu\'il', 'qu\'avec', 'qu\'en', 'd\'où', 'presqu\'un', 'jusqu\'au', \
                  'jusqu\'en', 'jusqu\'aux', 'd\'un', 'd\'une', 'qu\'elle','janvier', 'février', 'mars', 'avril', 'mai', 'juin',\
-                 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre', 'jour', 'pays', 'france']
+                 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre', 'jour', 'pays', 'france', '...', 'toutefois', 'passer', 'devoir',\
+                 'continuer', 'donner', 'beaucoup']
 
 stopwords_list = stopwords.words('french')
 stopwords_list.extend(morestopwords)
@@ -131,11 +132,11 @@ corpus = [id2word.doc2bow(text) for text in texts]
 
 from pprint import pprint
 # number of topics
-num_topics = 23
+num_topics = 20
 # Build LDA model
 lda_model = gensim.models.LdaMulticore(corpus=corpus,
                                        id2word=id2word,
-                                       num_topics=num_topics, passes = 20)
+                                       num_topics=num_topics, passes=20)
 # Print the Keyword in the 20 topics
 pprint(lda_model.print_topics())
 doc_lda = lda_model[corpus]
